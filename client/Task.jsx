@@ -34,7 +34,8 @@ Task = React.createClass({
 
   render() {
     const { _id, checked, private, username, owner, text, assigned, received } = this.props.task,
-      className = (checked ? 'checked' : '') + ' ' + (private ? 'private' : '')
+      className = (checked ? 'checked' : '') + ' ' + (private ? 'private' : ''),
+      mine = owner === this.props.currentUserId
 
     return (
       <li className={className}>
@@ -47,7 +48,7 @@ Task = React.createClass({
           onClick={this.toggleChecked}
         />
 
-        { owner === this.props.currentUserId &&
+        { mine &&
           <button className='toggle-private' onClick={this.togglePrivate}>
             {this.props.task.private ? "Private" : "Public"}
           </button>
@@ -57,13 +58,12 @@ Task = React.createClass({
         </label>
         <div className='assignee'>
           <span>Assigned to: </span>
-          { owner === this.props.currentUserId
-            ?
+          { mine ?
             <select onChange={this.assignTask}>
               {this.data.users.map(({_id, username}) =>
               <option key={_id} value={_id}>{username}</option>
             )}
-          </select>
+            </select>
           :
           <span>{ assigned === this.props.currentUserId
               ? "Me"
@@ -71,7 +71,7 @@ Task = React.createClass({
             </span>
           }
 
-          { received && "Delivered!"}
+          { mine && received && owner != this.props.currentUserId && " Delivered!"}
         </div>
       </li>
     )
