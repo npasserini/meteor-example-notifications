@@ -130,3 +130,8 @@ header .hide-completed {
     padding-bottom: 5px;
   }
 }
+
+.assignee {
+  padding: 5px;
+  float: right;
+}

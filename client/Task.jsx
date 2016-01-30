@@ -1,7 +1,15 @@
 Task = React.createClass({
+  mixins: [ReactMeteorData],
+
   proptypes: {
     task: React.PropTypes.object.isRequired,
     showPrivateButton: React.PropTypes.bool.isRequired
+  },
+
+  getMeteorData() {
+    return {
+      users: Meteor.users.find().fetch()
+    }
   },
 
   toggleChecked() {
@@ -18,10 +26,15 @@ Task = React.createClass({
     Meteor.call("setPrivate", _id, !private)
   },
 
-  render() {
-    const { _id, checked, private, username, text } = this.props.task,
-      className = (checked ? 'checked' : '') + ' ' + (private ? 'private' : '')
+  assignTask(event) {
+    const taskId = this.props.task._id
+    const userId = event.target.value
+    Meteor.call("assignTask", taskId, userId)
+  },
 
+  render() {
+    const { _id, checked, private, username, owner, text, assigned, received } = this.props.task,
+      className = (checked ? 'checked' : '') + ' ' + (private ? 'private' : '')
 
     return (
       <li className={className}>
@@ -34,18 +47,32 @@ Task = React.createClass({
           onClick={this.toggleChecked}
         />
 
-        { this.props.showPrivateButton &&
-        <button className='toggle-private' onClick={this.togglePrivate}>
-        {this.props.task.private ? "Private" : "Public"}
-        </button>
+        { owner === this.props.currentUserId &&
+          <button className='toggle-private' onClick={this.togglePrivate}>
+            {this.props.task.private ? "Private" : "Public"}
+          </button>
         }
         <label htmlFor={_id} className='text'>
           <strong>{username}</strong>: {text}
         </label>
-        { this.props.showPrivateButton &&
-          <select>
+        <div className='assignee'>
+          <span>Assigned to: </span>
+          { owner === this.props.currentUserId
+            ?
+            <select onChange={this.assignTask}>
+              {this.data.users.map(({_id, username}) =>
+              <option key={_id} value={_id}>{username}</option>
+            )}
           </select>
-        }
+          :
+          <span>{ assigned === this.props.currentUserId
+              ? "Me"
+              : username }
+            </span>
+          }
+
+          { received && "Delivered!"}
+        </div>
       </li>
     )
   }
