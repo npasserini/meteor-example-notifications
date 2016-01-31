@@ -59,9 +59,9 @@ Task = React.createClass({
         <div className='assignee'>
           <span>Assigned to: </span>
           { mine ?
-            <select onChange={this.assignTask}>
+            <select onChange={this.assignTask} value={assigned}>
               {this.data.users.map(({_id, username}) =>
-              <option key={_id} value={_id}>{username}</option>
+              <option key={_id} value={_id}> {username} </option>
             )}
             </select>
           :
