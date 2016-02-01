@@ -8,8 +8,13 @@ Task = React.createClass({
 
   getMeteorData() {
     return {
-      users: Meteor.users.find().fetch()
+      users: Meteor.users.find().fetch(),
+      messages: Messages.find({taskId: this.props.task._id}).fetch()
     }
+  },
+
+  getInitialState() {
+    return { showMessages: false }
   },
 
   toggleChecked() {
@@ -24,6 +29,19 @@ Task = React.createClass({
   togglePrivate() {
     const {_id, private} = this.props.task
     Meteor.call("setPrivate", _id, !private)
+  },
+
+  toggleShowMessages() {
+    const { showMessages } = this.state
+    this.setState({showMessages: !showMessages})
+  },
+
+  sendMessage(event) {
+    event.preventDefault()
+    if (this.state.text) {
+      sendMessage(this.props.task._id, this.state.text)
+      this.setState({text:''})
+    }
   },
 
   assignTask(event) {
@@ -53,7 +71,7 @@ Task = React.createClass({
             {this.props.task.private ? "Private" : "Public"}
           </button>
         }
-        <span className='text'>
+        <span className='text' onClick={this.toggleShowMessages}>
           <strong>{username}</strong>: {text}
         </span>
         <div className='assignee'>
@@ -72,7 +90,23 @@ Task = React.createClass({
           }
 
           { mine && received && owner != this.props.currentUserId && " Delivered!"}
+
         </div>
+        { this.state.showMessages &&
+          <div className='taskMessages'>
+            <ul>
+              { this.data.messages.map(({_id, username, text})=>
+                <li key={_id}><strong>{username}</strong>: {text}</li>
+              )}
+            </ul>
+            <form onSubmit={this.sendMessage}>
+              <input type="text" name="text" placeholder="Type to send a message"
+                value={this.state.text}
+                onChange={event => this.setState({text: event.target.value})}
+              />
+            </form>
+          </div>
+        }
       </li>
     )
   }
