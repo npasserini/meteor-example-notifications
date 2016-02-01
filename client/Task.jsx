@@ -53,9 +53,9 @@ Task = React.createClass({
             {this.props.task.private ? "Private" : "Public"}
           </button>
         }
-        <label htmlFor={_id} className='text'>
+        <span className='text'>
           <strong>{username}</strong>: {text}
-        </label>
+        </span>
         <div className='assignee'>
           <span>Assigned to: </span>
           { mine ?
