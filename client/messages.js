@@ -1,4 +1,5 @@
 Messages = new Mongo.Collection(null)
+const pusher = new Pusher()
 
 sendMessage = function(taskId, text) {
   const task = {
