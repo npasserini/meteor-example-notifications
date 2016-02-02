@@ -1,5 +1,4 @@
 Messages = new Mongo.Collection(null)
-const pusher = new Pusher()
 
 sendMessage = function(taskId, text) {
   const task = {
@@ -11,5 +10,4 @@ sendMessage = function(taskId, text) {
   }
 
   Messages.insert(task)
-  console.log(Pusher)
 }

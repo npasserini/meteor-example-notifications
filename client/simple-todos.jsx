@@ -20,5 +20,14 @@ Tracker.autorun(function() {
         if (!fields.received) Meteor.call('receivedTask', id)
       }
     })
+
+    HTTP.post('https://api.layer.com/nonces', { headers: {
+      "Accept": "application/vnd.layer+json; version=1.0",
+      "Content-Type": "application/json"
+    }}, (error, result) => {
+      Meteor.call('getLayerIdentityToken', (error, result) => {
+        console.log('Done!', error, result)
+      })
+    })
   }
 })

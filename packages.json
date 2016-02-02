@@ -1,4 +1,4 @@
 {
-  "pusher": "1.1.0",
-  "externalify": "0.1.0"
+  "externalify": "0.1.0",
+  "jsrsasign": "5.0.5" 
 }
