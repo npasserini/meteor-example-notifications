@@ -39,13 +39,13 @@ Tracker.autorun(function() {
           const websocketUrl = links.websocket.url .replace('https:', 'wss:')
           const session_token = JSON.parse(result.content).session_token
 
-          ws = new WebSocket(`${websocketUrl}?session_token=${session_token}`, 'layer-1.0')
+          client = new layer.Client({
+            appId: 'layer:///apps/staging/552a481c-c9ca-11e5-ac55-80e4720f6b18',
+            userId: Meteor.userId(),
+            sessionToken: session_token
+          });
 
-          ws.onopen = () => {
-            ws.send(JSON.stringify({
-              request_id: 'Pepe'
-            }))
-          }
+          console.log(client)
         })
       })
     })

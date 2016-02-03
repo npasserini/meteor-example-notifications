@@ -1,5 +1,6 @@
 {
   "externalify": "0.1.0",
   "jsrsasign": "5.0.5",
-  "parse-link-header": "0.4.1"
+  "parse-link-header": "0.4.1",
+  "layer-websdk": "0.9.0"
 }
