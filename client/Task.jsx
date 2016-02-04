@@ -37,9 +37,10 @@ Task = React.createClass({
   },
 
   sendMessage(event) {
+    const {_id, conversationId} = this.props.task
     event.preventDefault()
     if (this.state.text) {
-      sendMessage(this.props.task._id, this.state.text)
+      sendMessage(_id, conversationId, this.state.text)
       this.setState({text:''})
     }
   },

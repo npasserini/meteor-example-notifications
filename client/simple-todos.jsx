@@ -39,15 +39,33 @@ Tracker.autorun(function() {
           const websocketUrl = links.websocket.url .replace('https:', 'wss:')
           const session_token = JSON.parse(result.content).session_token
 
-          ws = new WebSocket(`${websocketUrl}?session_token=${session_token}`, 'layer-1.0')
-
+          const ws = new WebSocket(`${websocketUrl}?session_token=${session_token}`, 'layer-1.0')
           ws.onopen = () => {
-            ws.send(JSON.stringify({
-              request_id: 'Pepe'
-            }))
+            layer = ws
+            console.log('Connected to layer', layer)
           }
+          ws.onmessage = handleEvent
         })
       })
     })
   }
 })
+
+function handleEvent(event) {
+  const {type, body} = JSON.parse(event.data)
+  if (type == 'response') {
+    if (body.method == 'Conversation.create') {
+      Meteor.call('conversationCreated', body.request_id, body.data.id)
+    }
+  }
+  else if (type == 'change') {
+    if (body.object.type == 'Message' && body.data.sender.user_id != Meteor.userId()) {
+      const task = Tasks.findOne({conversationId: body.data.conversation.id})
+      const sender = Meteor.users.findOne(body.data.sender.user_id)
+      addMessage(task._id,
+        body.data.parts[0].body,
+        sender.username
+      )
+    }
+  }
+}
